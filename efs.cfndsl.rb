@@ -3,6 +3,8 @@ CloudFormation do
   maximum_availability_zones = external_parameters.fetch(:maximum_availability_zones, 5)
   az_conditions_resources('SubnetPersistence', maximum_availability_zones)
 
+  access_point_for_lambda = external_parameters[:access_point_for_lambda]
+
   tags = []
   tags << { Key: 'Environment', Value: Ref(:EnvironmentName) }
   tags << { Key: 'EnvironmentType', Value: Ref(:EnvironmentType) }
@@ -37,6 +39,22 @@ CloudFormation do
       SecurityGroups [ Ref("SecurityGroupEFS") ]
       SubnetId Ref("SubnetPersistence#{az}")
     end
+  end
+
+
+  EFS_AccessPoint('FileSystemAccessPoint') do
+    FileSystemId Ref('FileSystem')
+    PosixUser ({
+        Uid: access_point_for_lambda['posix_use_uid'],
+        Gid: access_point_for_lambda['posix_use_gid']
+    })
+
+    RootDirectory({
+         CreationInfo: {
+             OwnerGid: access_point_for_lambda['create_owner_uid'],
+             OwnerUid: access_point_for_lambda['create_owner_gid']
+         }
+    })
   end
 
   Output('FileSystem', Ref('FileSystem'))

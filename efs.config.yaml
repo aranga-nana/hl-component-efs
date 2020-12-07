@@ -1,4 +1,12 @@
 maximum_availability_zones: 5
+access_point_for_lambda:
+  create: false # true for create access point
+  posix_user_uid: 1000
+  posix_user_gid: 1000
+  create_owner_uid: 1000
+  create_owner_guid: 1000
+  permission_mask: 0777
+  root_directory: / # / for root of the efs
 
 ip_blocks:
   efs:
