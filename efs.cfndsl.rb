@@ -35,6 +35,30 @@ CloudFormation do
     end
   end
 
+  if create_access_point
+    Resource('EFSAccessPoint') do
+      Type 'AWS::EFS::AccessPoint'
+      Property('FileSystemId', Ref('FileSystem'))
+      Property('PosixUser',{
+          Uid: access_point_attribute['posix_user_uid'] || '1000',
+          Gid: access_point_attribute['posix_user_gid'] || '1000'
+      })
+      Property('RootDirectory',{
+          CreationInfo: {
+              OwnerUid: access_point_attribute['create_owner_uid'] || '1000',
+              OwnerGid: access_point_attribute['create_owner_gid'] || '1000',
+              Permissions: access_point_attribute['permission'] || '0777'
+          },
+          Path: access_point_attribute['path'] || '/'
+      })
+    end
+
+    Output('EFSAccessPointArn') {
+      Value  FnGetAtt('EFSAccessPoint','Arn')
+      Export FnSub('${EnvironmentName}-efs-access-point-arn')
+    }
+  end
+
   Output('FileSystem', Ref('FileSystem'))
 
 end
