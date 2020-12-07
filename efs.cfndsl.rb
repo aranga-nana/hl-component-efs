@@ -6,6 +6,9 @@ CloudFormation do
   tags << { Key: 'Environment', Value: Ref(:EnvironmentName) }
   tags << { Key: 'EnvironmentType', Value: Ref(:EnvironmentType) }
 
+  create_access_point =  external_parameters[:create_access_point]
+  access_point_attribute = external_parameters.fetch(:access_point_attribute,{})
+
   extra_tags.each { |key,value| tags << { Key: key, Value: value } } if defined? extra_tags
 
   EC2_SecurityGroup('SecurityGroupEFS') do
