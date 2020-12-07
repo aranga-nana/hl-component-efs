@@ -1,4 +1,12 @@
 maximum_availability_zones: 5
+create_access_point: false # create access point based on access_point_attribute properties (defaults )
+#access_point_attribute:
+#  path: /  efs root is mapped
+#  permission: 0777
+#  posix_user_uid: 1000
+#  posix_user_gid: 1000
+#  create_owner_uid: 1000
+#  create_owner_guid: 1000
 
 # encrypt: true
 # kms_key_alias: alias/efs
